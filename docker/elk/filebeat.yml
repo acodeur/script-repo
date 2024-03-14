@@ -1,0 +1,101 @@
+filebeat.inputs:
+- type: filestream
+  enabled: true
+  id: tp-vehicle
+  paths:
+  - /var/logs/vehicle-archive/catalina.out
+  fields:
+    source: vehicle
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '^\[\d{2}:\d{2}:\d{2}:\d{3}] '
+        negate: true
+        match: after
+
+- type: filestream
+  enabled: true
+  id: tp-driver
+  paths:
+  - /var/logs/driver-archive/catalina.out
+  fields:
+    source: driver
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '^\[\d{2}:\d{2}:\d{2}:\d{3}] '
+        negate: true
+        match: after
+
+- type: filestream
+  enabled: true
+  id: tp-transpcorp
+  paths:
+  - /var/logs/transpcorp-archive/catalina.out
+  fields:
+    source: transpcorp
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '^\[\d{2}:\d{2}:\d{2}:\d{3}] '
+        negate: true
+        match: after
+
+- type: filestream
+  enabled: true
+  id: tp-event
+  paths:
+  - /var/logs/event-archive/catalina.out
+  fields:
+    source: event
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '^\[\d{2}:\d{2}:\d{2}:\d{3}] '
+        negate: true
+        match: after
+
+- type: filestream
+  enabled: true
+  id: traffic-cockpit
+  paths:
+  - /var/logs/traffic-cockpit/traffic-cockpit_info*.log
+  fields:
+    source: traffic-cockpit
+  parsers:
+    - multiline:
+        type: pattern
+        pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} '
+        negate: true
+        match: after
+
+setup.ilm.enabled: false
+setup.template.name: "erhuan"
+setup.template.pattern: "erhuan-*"
+setup.template.overwrite: true
+setup.template.enabled: true
+
+output.elasticsearch:
+  hosts: ["es01:9200"]
+  index: "erhuan-%{+yyyy.MM.dd}"
+  indices:
+    - index: 'erhuan-themeportrait-vehicle'
+      when.equals:
+        fields.source: 'vehicle'
+    - index: 'erhuan-themeportrait-driver'
+      when.equals:
+        fields.source: 'driver'
+    - index: 'erhuan-themeportrait-transpcorp'
+      when.equals:
+        fields.source: 'transpcorp'
+    - index: 'erhuan-themeportrait-event'
+      when.equals:
+        fields.source: 'event'
+    - index: 'erhuan-traffic-cockpit'
+      when.equals:
+        fields.source: 'traffic-cockpit'
+
+
+#processors:
+#  - add_host_metadata: ~
+ 
