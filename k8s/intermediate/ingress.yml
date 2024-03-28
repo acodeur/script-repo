@@ -1,0 +1,26 @@
+# kubectl create ing ngx-ing --class=ngx-ink --rule="ngx.test/=ngx-svc:80" --dry-run=client -oyaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngx-ing
+
+spec:
+  ingressClassName: ngx-ink
+  rules:
+    - host: ngx.test
+      http:
+        paths:
+          - backend:
+              service:
+                name: ngx-svc
+                port:
+                  number: 80
+            path: /
+            pathType: Exact
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: ngx-ink
+spec:
+  controller: nginx.org/ingress-controller
