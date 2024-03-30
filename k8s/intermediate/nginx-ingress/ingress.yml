@@ -3,6 +3,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ngx-ing
+  namespace: nginx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Host $host;
 
 spec:
   ingressClassName: ngx-ink
@@ -14,7 +18,7 @@ spec:
               service:
                 name: ngx-svc
                 port:
-                  number: 80
+                  number: 8080
             path: /
             pathType: Exact
 ---
@@ -22,5 +26,8 @@ apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
   name: ngx-ink
+  namespace: nginx-ingress
+  # annotations:
+  #   ingressclass.kubernetes.io/is-default-class: "true"
 spec:
   controller: nginx.org/ingress-controller
