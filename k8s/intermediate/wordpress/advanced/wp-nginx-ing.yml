@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: wp-nginx-ic
+  labels:
+    app: wordpress
+spec:
+  controller: nginx.org/ingress-controller
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wp-nginx-ing
+  labels:
+    app: wordpress
+spec:
+  ingressClassName: wp-nginx-ic
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: wp-wordpress-svc
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+      host: wp.test

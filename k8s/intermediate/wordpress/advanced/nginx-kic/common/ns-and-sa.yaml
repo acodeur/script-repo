@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-ingress-ns
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx-ingress-sa
+  namespace: nginx-ingress-ns
+#automountServiceAccountToken: false
